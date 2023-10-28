@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Pins</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Generate Pins</h1>
+
+    <label for="latitude">Latitude:</label>
+    <input type="text" id="latitude" placeholder="Enter latitude">
+
+    <label for="longitude">Longitude:</label>
+    <input type="text" id="longitude" placeholder="Enter longitude">
+
+    <label for="distanceEastWest">Distance East-West:</label>
+    <input type="text" id="distanceEastWest" placeholder="Enter distance east-west">
+
+    <label for="distanceSouthNorth">Distance South-North:</label>
+    <input type="text" id="distanceSouthNorth" placeholder="Enter distance south-north">
+
+    <label for="numPins">Number of Pins:</label>
+    <input type="text" id="numPins" placeholder="Enter number of pins">
+
+    <label for="keywords">Keywords (comma-separated):</label>
+    <input type="text" id="keywords" placeholder="Enter keywords">
+
+    <label for="businessDetails">Business Details:</label>
+    <input type="text" id="businessDetails" placeholder="Enter business details">
+
+    <label for="businessDescription">Business Description:</label>
+    <input type="text" id="businessDescription" placeholder="Enter business description">
+
+    <button onclick="generatePins()">Generate</button>
+
+  </div>
+
+  <div class="overlay">
+    <div class="notification">
+      <h2 id="notificationText"></h2>
+      <button onclick="closeNotification()">Close</button>
+    </div>
+  </div>
+  
+  
+  <script>
+ function generatePins() {
+  const baseUrl = "http://localhost:5000/generate_pins_script";
+  const latitude = document.getElementById("latitude").value;
+  const longitude = document.getElementById("longitude").value;
+  const distanceEastWest = document.getElementById("distanceEastWest").value;
+  const distanceSouthNorth = document.getElementById("distanceSouthNorth").value;
+  const numPins = document.getElementById("numPins").value;
+  const keywords = document.getElementById("keywords").value.split(",");
+  const businessDetails = document.getElementById("businessDetails").value.split(",");
+  const businessDescription = document.getElementById("businessDescription").value;
+
+  const pinData = {
+    latitude: latitude,
+    longitude: longitude,
+    distanceEastWest: distanceEastWest,
+    distanceSouthNorth: distanceSouthNorth,
+    numPins: numPins,
+    keywords: keywords,
+    businessDetails: businessDetails,
+    businessDescription: businessDescription
+  };
+
+  fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(pinData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      const notificationText = document.getElementById("notificationText");
+      notificationText.innerText = "Your sheet is successfully generated.";
+      document.querySelector(".overlay").style.display = "flex";
+
+      const closeButton = document.getElementById("closeButton");
+      closeButton.addEventListener("click", () => {
+        document.querySelector(".overlay").style.display = "none";
+      });
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+function closeNotification() {
+  document.querySelector(".overlay").style.display = "none";
+}
+
+  </script>
+</body>
+</html>
